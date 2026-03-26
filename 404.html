@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Redirecting...</title>
+</head>
+<body>
+    <script>
+        // 1. List your target domains here
+        const domains = [
+            "google.com",
+            "bing.com"
+        ];
+
+        // 2. Get the path (e.g., /script/234)
+        let currentPath = window.location.pathname;
+
+        // 3. IMPORTANT: Remove your GitHub folder name from the path 
+        // This changes "/script/234" into "/234"
+        currentPath = currentPath.replace('/script', '');
+
+        // 4. Pick a random domain
+        const randomDomain = domains[Math.floor(Math.random() * domains.length)];
+
+        // 5. Build the final URL
+        const finalUrl = "https://" + randomDomain + currentPath;
+
+        // 6. Redirect
+        window.location.replace(finalUrl);
+    </script>
+</body>
+</html>
