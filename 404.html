@@ -2,30 +2,73 @@
 <html>
 <head>
     <title>Redirecting...</title>
+    <meta charset="utf-8">
 </head>
 <body>
+    <h1 id="status">Redirecting...</h1>
+
     <script>
-        // 1. List your target domains here
-        const domains = [
-            "google.com",
-            "bing.com"
-        ];
+        // --- CONFIGURATION SECTION ---
+        const settings = {
+            // Set this to false to stop ALL redirects instantly
+            allRedirectsEnabled: true, 
+            
+            // Your GitHub Repository Name
+            repoName: "script", 
 
-        // 2. Get the path (e.g., /script/234)
-        let currentPath = window.location.pathname;
+            // LIST YOUR DOMAINS HERE
+            // Set 'active: true' to use it.
+            // Set 'active: false' to keep the link but stop using it.
+            domains: [
+                { url: "example1.com", active: true },
+                { url: "example2.com", active: true },
+                { url: "test-site.net", active: false }, // This one will be ignored
+                { url: "my-backup-site.org", active: true },
+            ]
+        };
 
-        // 3. IMPORTANT: Remove your GitHub folder name from the path 
-        // This changes "/script/234" into "/234"
-        currentPath = currentPath.replace('/script', '');
+        function startRedirect() {
+            const statusElement = document.getElementById('status');
 
-        // 4. Pick a random domain
-        const randomDomain = domains[Math.floor(Math.random() * domains.length)];
+            // 1. Check if the master switch is OFF
+            if (!settings.allRedirectsEnabled) {
+                statusElement.innerText = "Redirects are currently DISABLED.";
+                return;
+            }
 
-        // 5. Build the final URL
-        const finalUrl = "https://" + randomDomain + currentPath;
+            // 2. Filter list to only include ACTIVE domains
+            const activeDomains = settings.domains.filter(site => site.active === true);
 
-        // 6. Redirect
-        window.location.replace(finalUrl);
+            // 3. Check if we have any active domains left
+            if (activeDomains.length === 0) {
+                statusElement.innerText = "No active domains found in the list.";
+                return;
+            }
+
+            // 4. Get the full path (supports any characters like /ddhundar-2-full)
+            let currentPath = window.location.pathname;
+
+            // Remove the repo name from the path if it exists
+            // Example: /script/ddhundar-2-full -> /ddhundar-2-full
+            const repoPath = "/" + settings.repoName;
+            if (currentPath.startsWith(repoPath)) {
+                currentPath = currentPath.substring(repoPath.length);
+            }
+
+            // 5. Pick a random domain from the active list
+            const randomIndex = Math.floor(Math.random() * activeDomains.length);
+            const chosenDomain = activeDomains[randomIndex].url;
+
+            // 6. Build final URL (handles slashes safely)
+            const cleanPath = currentPath.startsWith('/') ? currentPath : '/' + currentPath;
+            const finalUrl = "https://" + chosenDomain + cleanPath;
+
+            // 7. Execute Redirect
+            window.location.replace(finalUrl);
+        }
+
+        // Run the function
+        startRedirect();
     </script>
 </body>
 </html>
