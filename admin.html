@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h1>Admin Panel</h1>
+    <input id="u" placeholder="Username"><input id="p" type="password" placeholder="Password">
+    <button onclick="register()">Register</button>
+    <script>
+        async function register() {
+            await fetch('/api/auth', { 
+                method: 'POST', 
+                body: JSON.stringify({action:'register', username: document.getElementById('u').value, password: document.getElementById('p').value}) 
+            });
+            alert("Account Created!");
+        }
+    </script>
+</body>
+</html>
